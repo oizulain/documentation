@@ -1,13 +1,12 @@
-'use strict';
-
 var remark = require('remark'),
   html = require('remark-html'),
   visit = require('unist-util-visit'),
-  utils = require('documentation-theme-utils');
+  formatType = require('../../lib/output/html/format_type'),
+  link = require('../../lib/output/html/link');
 
 function getHref(paths) {
   return function (text) {
-    if (paths && paths.indexOf(text) >= 0) {
+    if (paths && paths.indexOf(text) !== -1) {
       return '#' + text;
     }
   };
@@ -44,7 +43,7 @@ module.exports = function (ast) {
 module.exports.type = function (type, paths) {
   return module.exports({
     type: 'root',
-    children: utils.formatType(type, getHref(paths))
+    children: formatType(type, getHref(paths))
   }).replace(/\n/g, '');
 };
 
@@ -58,6 +57,6 @@ module.exports.type = function (type, paths) {
 module.exports.link = function (paths, text, description) {
   return module.exports({
     type: 'root',
-    children: [utils.link(text, getHref(paths), description)]
+    children: [link(text, getHref(paths), description)]
   }).replace(/\n/g, '');
 };
